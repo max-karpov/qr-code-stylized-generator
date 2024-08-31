@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom QR Code Download</title>
+    <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+</head>
+<body>
+    <div id="canvas"></div>
+
+    <script>
+        const qrCode = new QRCodeStyling({
+          width: 5000,
+          height: 5000,
+          data: "https://api.toptierauth.com/v1/coa/attendance/clzjl44be000a9s0su93d1r1u",
+          dotsOptions: {
+            color: "#000",
+            type: "dots"
+          },
+          cornersSquareOptions: {
+            color: "#000",
+            type: "circle"
+          },
+          cornersDotOptions: {
+            color: "#000",
+            type: "square"
+          },
+          image: "Volunteer Club Logo.png",
+          imageOptions: {
+            crossOrigin: "anonymous",
+            margin: 100,
+            imageSize: 0.5
+          }
+        });
+
+        qrCode.append(document.getElementById("canvas"));
+
+        function downloadQRCode() {
+          qrCode.getRawData("png").then((blob) => {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "custom_qr_code.png";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          });
+        }
+
+        const downloadButton = document.createElement("button");
+        downloadButton.innerText = "Download QR Code";
+        downloadButton.onclick = downloadQRCode;
+        document.body.appendChild(downloadButton);
+    </script>
+</body>
+</html>
