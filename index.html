@@ -3,56 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Custom QR Code Download</title>
+    <title>Custom QR Code Generator</title>
+    <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+    <script src="script.js" defer></script>
 </head>
-<body>
-    <div id="canvas"></div>
+<body>    
+    <div class="container">
+        <!-- Левая часть с настройками -->
+        <div class="qr-customizer">
+            <div class="move-indicator draggable">
+                <div class="line"></div>
+                <div class="line"></div>
+            </div>
 
-    <script>
-        const qrCode = new QRCodeStyling({
-          width: 5000,
-          height: 5000,
-          data: "https://api.toptierauth.com/v1/coa/attendance/clzjl44be000a9s0su93d1r1u",
-          dotsOptions: {
-            color: "#000",
-            type: "dots"
-          },
-          cornersSquareOptions: {
-            color: "#000",
-            type: "circle"
-          },
-          cornersDotOptions: {
-            color: "#000",
-            type: "square"
-          },
-          image: "Volunteer Club Logo.png",
-          imageOptions: {
-            crossOrigin: "anonymous",
-            margin: 100,
-            imageSize: 0.5
-          }
-        });
+            <!-- Поле для ввода URL -->
+            <div>
+              <label for="dataInput">QR Code URL:</label>
+              <input type="text" id="dataInput" value="https://example.com">
+            </div>
 
-        qrCode.append(document.getElementById("canvas"));
+            <!-- Три кнопки выбора цвета в один ряд, по третям -->
+            <div class="color-picker-row">
+                <div class="color-picker-group">
+                    <label for="dotsColor">Dots:</label>
+                    <input type="color" id="dotsColor" value="#e0e0e0">
+                    <input type="text" id="dotsColorHex" class="color-hex-input" value="#e0e0e0">
+                </div>
+                <div class="color-picker-group">
+                    <label for="cornersColor">Corners:</label>
+                    <input type="color" id="cornersColor" value="#e0e0e0">
+                    <input type="text" id="cornersColorHex" class="color-hex-input" value="#e0e0e0">
+                </div>
+                <div class="color-picker-group">
+                    <label for="bgColor">Background:</label>
+                    <input type="color" id="bgColor" value="#121212">
+                    <input type="text" id="bgColorHex" class="color-hex-input" value="#121212">
+                </div>
+            </div>
 
-        function downloadQRCode() {
-          qrCode.getRawData("png").then((blob) => {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "custom_qr_code.png";
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-          });
-        }
+            <!-- Типы точек и углов -->
+            <div>
+                <label for="dotsType">Dots Type:</label>
+                <select id="dotsType">
+                    <option value="square" selected>Square</option>
+                    <option value="dots">Dots</option>
+                    <option value="rounded">Rounded</option>
+                    <option value="classy">Classy</option>
+                    <option value="classy-rounded">Classy Rounded</option>
+                    <option value="extra-rounded">Extra Rounded</option>
+                </select>
+            </div>
 
-        const downloadButton = document.createElement("button");
-        downloadButton.innerText = "Download QR Code";
-        downloadButton.onclick = downloadQRCode;
-        document.body.appendChild(downloadButton);
-    </script>
+            <div>
+                <label for="cornersType">Corners Type:</label>
+                <select id="cornersType">
+                    <option value="square" selected>Square</option>
+                    <option value="dot">Dot</option>
+                    <option value="extra-rounded">Extra Rounded</option>
+                </select>
+            </div>
+
+            <!-- Чекбокс для логотипа -->
+            <div class="checkbox-group">
+                <label for="logoToggle">Include Logo</label>
+                <input type="checkbox" id="logoToggle">
+            </div>
+            
+            <!-- Кнопка выбора файла и удаление логотипа -->
+            <div class="file-upload-container">
+                <label for="logoFile" class="file-upload-button">Choose Logo File</label>
+                <input type="file" id="logoFile" accept="image/*" style="display: none;">
+                <span id="fileName" class="file-name"></span>
+                <span id="removeFile" class="remove-file" style="display: none;">&times;</span>
+            </div>
+            
+            <!-- Ползунок для настройки размера логотипа -->
+            <div class="logo-size-container">
+                <label for="logoSize">Logo Size (0.1 to 1.0):</label>
+                <input type="range" id="logoSize" value="0.6" min="0.1" max="1" step="0.1">
+            </div>
+
+            <!-- Разрешение и прозрачность в одной строке -->
+            <div class="resolution-transparent-row">
+                <div>
+                    <label for="resolution">Resolution (px):</label>
+                    <input type="number" id="resolution" value="1000" min="100" max="10000">
+                </div>
+                <div class="checkbox-group">
+                    <label for="transparentToggle">Transparent</label>
+                    <input type="checkbox" id="transparentToggle">
+                </div>
+            </div>
+
+            <!-- Кнопки для скачивания -->
+            <div class="buttons">
+                <button id="downloadPNG">Download PNG</button>
+                <button id="downloadSVG">Download SVG</button>
+            </div>
+        </div>
+
+        <!-- Правая часть с QR кодом -->
+        <div class="qr-preview">
+            <div id="canvas"></div>
+        </div>
+    </div>
 </body>
 </html>
